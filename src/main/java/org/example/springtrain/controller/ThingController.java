@@ -1,4 +1,4 @@
-package org.example.springtrain.contoller;
+package org.example.springtrain.controller;
 
 import java.util.List;
 import org.example.springtrain.model.Thing;
@@ -12,7 +12,7 @@ public class ThingController {
 
     private final ThingRepository thingRepository;
 
-    @Autowired
+    @Autowired //unnecessary
     public ThingController(ThingRepository thingRepository) {
         this.thingRepository = thingRepository;
     }
