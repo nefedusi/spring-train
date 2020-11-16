@@ -1,0 +1,9 @@
+DROP TABLE IF EXISTS thing;
+
+CREATE TABLE thing (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(200) DEFAULT NULL
+);
+
+INSERT INTO thing (name) VALUES
+('Spade'), ('Hammer'), ('Axe');
