@@ -18,13 +18,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 //Prior to Spring Security 5.0 the default PasswordEncoder was NoOpPasswordEncoder which required plain text passwords.
                 // In Spring Security 5, the default is DelegatingPasswordEncoder, which required Password Storage Format.
                 .password("{noop}userpass")
-                .roles("USER");
+                .roles("USER"); //or .authorities("ROLE_USER")
+        authenticationManagerBuilder.inMemoryAuthentication()
+                .withUser("admin")
+                .password("{noop}adminpass")
+                .authorities("ROLE_ADMIN"); //or .roles("ADMIN")
+        authenticationManagerBuilder.inMemoryAuthentication()
+                .withUser("universal")
+                .password("{noop}universalpass")
+                .roles("USER", "ADMIN");
+        //https://www.journaldev.com/8748/spring-security-role-based-access-authorization-example
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/unsafe/*").permitAll()
+                .antMatchers("/safe/user-and-admin")
+                .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
+                .antMatchers("/safe/only-user")
+                .access("hasRole('ROLE_USER')")
+                .antMatchers("/safe/only-admin")
+                .access("hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();

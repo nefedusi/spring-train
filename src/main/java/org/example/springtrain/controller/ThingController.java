@@ -17,16 +17,11 @@ public class ThingController {
         this.thingRepository = thingRepository;
     }
 
-    //curl -i http://localhost:8080/thing/all
-    //curl -i -u user:userpass http://localhost:8080/thing/all
-    //Помнить, что при повторном запросе от того же пользователя, но с другим паролем, доступ к эндпоинту будет! Т.к. отправляется cookie JSESSIONID
+    //доступно любому авторизованному пользователю с любой ролью
     @GetMapping("/thing/all")
     public List<Thing> getAll() {
         return thingRepository.findAll();
     }
 
-    @GetMapping("/unsafe/some")
-    public String unsafeAnother() {
-        return "Some unsafe endpoint";
-    }
+
 }
