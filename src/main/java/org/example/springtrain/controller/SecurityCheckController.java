@@ -1,5 +1,6 @@
 package org.example.springtrain.controller;
 
+import org.example.springtrain.config.IsAdmin;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -100,5 +101,11 @@ public class SecurityCheckController {
     public String postAuthorizeAdminAllowed() {
         System.out.println("postAuthorizeUserAndAdminAllowed method called");
         return "Endpoint allowed only for admin. PostAuthorize annotation";
+    }
+
+    @IsAdmin
+    @GetMapping("/safe/custom-annotation/only-admin")
+    public String customAnnotaionAdminAllowed() {
+        return "Endpoint allowed only for admin. IsAdmin custom annotation";
     }
 }
