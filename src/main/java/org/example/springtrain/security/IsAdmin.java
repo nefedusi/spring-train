@@ -1,4 +1,4 @@
-package org.example.springtrain.config;
+package org.example.springtrain.security;
 
 import org.springframework.security.access.prepost.PreAuthorize;
 

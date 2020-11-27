@@ -1,10 +1,14 @@
 package org.example.springtrain.config;
 
+import org.example.springtrain.repository.PersonRepository;
+import org.example.springtrain.security.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
@@ -13,8 +17,28 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    //todo use Security project for Swagger config
+
+    @Bean
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
+    public CustomUserDetailsService customUserDetailsService(PersonRepository personRepository) {
+        return new CustomUserDetailsService(personRepository);
+    }
+
+    @Autowired
+    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder,
+                                CustomUserDetailsService userDetailsService) throws Exception {
+        //Если нужна in-memory authentication.
+        //configureInMemoryAuthentication(authenticationManagerBuilder);
+
+        //Аутентификация с помощью данных в БД.
+        //Или можно просто навесить @Service над CustomUserDetailsService, и будет работать.
+        //Ещё можно set it as a property in a custom authenticationProvider bean, and then inject that using
+        // the AuthenticationManagerBuilder# authenticationProvider function.
+        authenticationManagerBuilder.userDetailsService(userDetailsService);
+    }
+
+    private void configureInMemoryAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder.inMemoryAuthentication()
                 .withUser("user")
                 //Prior to Spring Security 5.0 the default PasswordEncoder was NoOpPasswordEncoder which required plain text passwords.
@@ -24,18 +48,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         authenticationManagerBuilder.inMemoryAuthentication()
                 .withUser("admin")
                 .password("{noop}adminpass")
-                .authorities("ROLE_ADMIN"); //or .roles("ADMIN")
-        authenticationManagerBuilder.inMemoryAuthentication()
-                .withUser("universal")
-                .password("{noop}universalpass")
                 .roles("USER", "ADMIN");
+        authenticationManagerBuilder.inMemoryAuthentication()
+                .withUser("cleanadmin")
+                .password("{noop}cleanadminpass")
+                .authorities("ROLE_ADMIN"); //or .roles("ADMIN")
         //https://www.journaldev.com/8748/spring-security-role-based-access-authorization-example
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/unsafe/*").permitAll()
+                // .antMatchers("/").permitAll() doesn't allow thing/all
+                // .antMatchers("/**").permitAll() allow thing/all
+                // .antMatchers("/*").permitAll() doesn't allow thing/all
+                .antMatchers("/unsafe/**").permitAll()
                 .antMatchers("/safe/user-and-admin")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .antMatchers("/safe/only-user")
@@ -45,5 +72,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();
+    }
+
+    @Override
+    public void configure(WebSecurity web) {
+        web.ignoring()
+                .antMatchers("/h2-console/**");
     }
 }

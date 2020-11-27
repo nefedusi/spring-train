@@ -1,6 +1,7 @@
 package org.example.springtrain.controller;
 
-import org.example.springtrain.config.IsAdmin;
+import org.example.springtrain.security.IsAdmin;
+import org.example.springtrain.security.IsUser;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -42,7 +43,8 @@ public class SecurityCheckController {
 
     @GetMapping("/safe/only-user")
     public String userAllowed() {
-        return "Endpoint allowed only for user. It's a stange case, usually everything allowed for user is " +
+        return "Endpoint allowed only for USER_ROLE. If some admin has ADMIN_ROLE but doesn't have " +
+                "USER_ROLE - it's strange, because usually everything allowed for user is " +
                 "also allowed for admin";
     }
 
@@ -101,6 +103,16 @@ public class SecurityCheckController {
     public String postAuthorizeAdminAllowed() {
         System.out.println("postAuthorizeUserAndAdminAllowed method called");
         return "Endpoint allowed only for admin. PostAuthorize annotation";
+    }
+
+    //Если @IsUser пускает только user и не пускает admin, то при навешивании обеих аннотаций @IsUser и @IsAdmin одновременно будет работать только первая,
+    // т.е. авторизацию пройдёт только ROLE_USER, а ROLE_ADMIN не пройдёт.
+    //Проблема решается либо добавлением ROLE_USER и ROLE_ADMIN в аннотацию IsUser либо добавлением ROLE_USER и ROLE_ADMIN пользователю-администратору и
+    // недопущением существования пользователей с ролью ROLE_ADMIN, но без роли ROLE_USER.
+    @IsUser
+    @GetMapping("/safe/custom-annotation/user-and-admin")
+    public String customAnnotationUserAndAdminAllowed() {
+        return "Endpoint allowed for user and admin roles. IsUser and IsAdmin custom annotations";
     }
 
     @IsAdmin

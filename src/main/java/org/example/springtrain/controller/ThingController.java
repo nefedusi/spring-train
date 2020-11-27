@@ -12,7 +12,7 @@ public class ThingController {
 
     private final ThingRepository thingRepository;
 
-    @Autowired //unnecessary
+    @Autowired //unnecessary annotation
     public ThingController(ThingRepository thingRepository) {
         this.thingRepository = thingRepository;
     }
@@ -22,6 +22,4 @@ public class ThingController {
     public List<Thing> getAll() {
         return thingRepository.findAll();
     }
-
-
 }
