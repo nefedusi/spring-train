@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.List;
 
 @AllArgsConstructor
-//todo https://www.baeldung.com/spring-security-authentication-with-a-database
 public class CustomUserPrincipal implements UserDetails {
 
     private final Person person;
@@ -22,7 +21,7 @@ public class CustomUserPrincipal implements UserDetails {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         List<PersonRole> roles = person.getRoles();
         for (PersonRole role : roles) {
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getRole());
+            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role.getRole().toString());
             authorities.add(authority);
         }
         return authorities;

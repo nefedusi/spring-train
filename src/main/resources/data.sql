@@ -26,5 +26,7 @@ CREATE TABLE IF NOT EXISTS person_role (
   FOREIGN KEY(person_id) REFERENCES person(id)
 );
 
+-- 0 - ROLE_USER
+-- 1 - ROLE_ADMIN
 INSERT INTO person_role (id, person_id, role) VALUES
-(1, 1, 'ROLE_USER'), (2, 2, 'ROLE_USER'), (3, 2, 'ROLE_ADMIN'), (4, 3, 'ROLE_ADMIN');
+(1, 1, 0), (2, 2, 0), (3, 2, 1), (4, 3, 1);

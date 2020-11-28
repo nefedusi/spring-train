@@ -14,11 +14,10 @@ public class PersonRole {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.EAGER) //todo cascade
+    @ManyToOne(optional = false, fetch = FetchType.EAGER) //todo cascade
     @JoinColumn(name = "person_id", referencedColumnName = "id")
     private Person person;
 
-    //todo use enum
-    @Column(nullable = false)
-    private String role;
+    @Enumerated(EnumType.ORDINAL)
+    private Role role;
 }
