@@ -2,6 +2,7 @@ package org.example.springtrain.config;
 
 import org.example.springtrain.repository.PersonRepository;
 import org.example.springtrain.security.CustomUserDetailsService;
+import org.example.springtrain.security.JwtFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -71,7 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .access("hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
                 .and()
-                .httpBasic();
+                //.httpBasic();
+                .addFilter(new JwtFilter(super.authenticationManagerBean()));
     }
 
     @Override
