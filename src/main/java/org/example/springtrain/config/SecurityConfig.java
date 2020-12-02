@@ -1,11 +1,14 @@
 package org.example.springtrain.config;
 
+import lombok.RequiredArgsConstructor;
 import org.example.springtrain.repository.PersonRepository;
 import org.example.springtrain.security.CustomUserDetailsService;
 import org.example.springtrain.security.JwtFilter;
+import org.example.springtrain.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,17 +17,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 @Configuration
+@RequiredArgsConstructor
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    //todo see https://www.javainuse.com/spring/boot-jwt-mysql
+
     //todo use Security project for Swagger config
 
-    @Bean
-    @Autowired
-    public CustomUserDetailsService customUserDetailsService(PersonRepository personRepository) {
-        return new CustomUserDetailsService(personRepository);
-    }
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder,
@@ -64,6 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // .antMatchers("/**").permitAll() allow thing/all
                 // .antMatchers("/*").permitAll() doesn't allow thing/all
                 .antMatchers("/unsafe/**").permitAll()
+                .antMatchers("/authenticate").permitAll()
                 .antMatchers("/safe/user-and-admin")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
                 .antMatchers("/safe/only-user")
@@ -73,12 +76,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 //.httpBasic();
-                .addFilter(new JwtFilter(super.authenticationManagerBean()));
+                .addFilter(new JwtFilter(authenticationManager(), jwtTokenProvider)); //todo это нормально использовать другой auth manager тут?
     }
 
     @Override
     public void configure(WebSecurity web) {
         web.ignoring()
                 .antMatchers("/h2-console/**");
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
     }
 }
