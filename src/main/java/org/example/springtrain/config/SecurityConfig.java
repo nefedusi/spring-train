@@ -1,10 +1,7 @@
 package org.example.springtrain.config;
 
 import lombok.RequiredArgsConstructor;
-import org.example.springtrain.repository.PersonRepository;
-import org.example.springtrain.security.CustomUserDetailsService;
 import org.example.springtrain.security.JwtFilter;
-import org.example.springtrain.security.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
@@ -26,19 +25,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     //todo use Security project for Swagger config
 
-    private final JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private JwtFilter jwtFilter;
+
+    //private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder,
-                                CustomUserDetailsService userDetailsService) throws Exception {
+    public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder
+            /*,
+                                CustomUserDetailsService userDetailsService*/) throws Exception {
         //Если нужна in-memory authentication.
         //configureInMemoryAuthentication(authenticationManagerBuilder);
 
-        //Аутентификация с помощью данных в БД.
+        //Конфигурирование AuthenticationManager - аутентификация с помощью данных в БД.
         //Или можно просто навесить @Service над CustomUserDetailsService, и будет работать.
         //Ещё можно set it as a property in a custom authenticationProvider bean, and then inject that using
         // the AuthenticationManagerBuilder# authenticationProvider function.
-        authenticationManagerBuilder.userDetailsService(userDetailsService);
+        //authenticationManagerBuilder.userDetailsService(userDetailsService);
     }
 
     private void configureInMemoryAuthentication(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
@@ -76,7 +79,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 //.httpBasic();
-                .addFilter(new JwtFilter(authenticationManager(), jwtTokenProvider)); //todo это нормально использовать другой auth manager тут?
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        //http.addFilter(jwtFilter);
+        //http.addFilter(new JwtFilter(authenticationManager(), jwtTokenProvider)); //todo это нормально использовать другой auth manager тут?
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override

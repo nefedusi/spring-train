@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
+//todo add validation
 public class AuthenticationDto {
 
     private String login;
-
     private String password;
 }
