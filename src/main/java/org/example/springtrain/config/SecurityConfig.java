@@ -21,14 +21,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableGlobalMethodSecurity(securedEnabled = true, jsr250Enabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    //todo see https://www.javainuse.com/spring/boot-jwt-mysql
-
-    //todo use Security project for Swagger config
-
     @Autowired
     private JwtFilter jwtFilter;
-
-    //private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder
@@ -78,11 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .access("hasRole('ROLE_ADMIN')")
                 .anyRequest().authenticated()
                 .and()
-                //.httpBasic();
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .csrf().disable();
 
-        //http.addFilter(jwtFilter);
-        //http.addFilter(new JwtFilter(authenticationManager(), jwtTokenProvider)); //todo это нормально использовать другой auth manager тут?
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
