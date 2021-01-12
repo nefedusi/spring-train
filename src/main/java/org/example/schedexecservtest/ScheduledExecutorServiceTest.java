@@ -9,7 +9,7 @@ public class ScheduledExecutorServiceTest {
 
     public static void main(String[] args) {
         AtomicInteger esCounter = new AtomicInteger(); //AtomicInteger для требования effective final в лямбде
-        final int iterations = 5;
+        final int iterations = 10;
         final Thread mainThread = Thread.currentThread();
 
         ScheduledExecutorService es = Executors.newSingleThreadScheduledExecutor();
@@ -31,6 +31,7 @@ public class ScheduledExecutorServiceTest {
                 System.out.println("Executor service completed before timeout");
             } else {
                 System.out.println("Executor service completed by timeout");
+                //Если поместить сюда es.shutdown(), то es не будет принимать новые задачи по истечении таймаута, и программа завершится.
             }
         } catch (InterruptedException e) {
             System.out.println("Interrupted exception caught"); //несмотря на исключение, лямбда всё равно выполнится iteration число раз
