@@ -30,3 +30,22 @@ CREATE TABLE IF NOT EXISTS person_role (
 -- 1 - ROLE_ADMIN
 INSERT INTO person_role (id, person_id, role) VALUES
 (1, 1, 0), (2, 2, 0), (3, 2, 1), (4, 3, 1);
+
+
+CREATE TABLE IF NOT EXISTS parent_entity (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255)
+);
+
+--INSERT INTO parent_entity (id, name) VALUES
+--(1, 'P1'), (2, 'P2');
+
+CREATE TABLE IF NOT EXISTS child_entity (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(255),
+  parent_entity_id BIGINT,
+  FOREIGN KEY(parent_entity_id) REFERENCES parent_entity(id)
+);
+
+--INSERT INTO child_entity (id, name, parent_entity_id) VALUES
+--(1, 'C1', 1), (2, 'C2', 1), (3, 'C3', 1), (4, 'C4', 2);
