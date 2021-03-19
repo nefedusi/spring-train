@@ -60,9 +60,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 // .antMatchers("/").permitAll() doesn't allow thing/all
-                // .antMatchers("/**").permitAll() allow thing/all
+                 .antMatchers("/**").permitAll() //allow thing/all
                 // .antMatchers("/*").permitAll() doesn't allow thing/all
-                .antMatchers("/unsafe/**").permitAll()
+                /*.antMatchers("/unsafe/**").permitAll()
                 .antMatchers("/authenticate").permitAll()
                 .antMatchers("/safe/user-and-admin")
                 .access("hasRole('ROLE_USER') or hasRole('ROLE_ADMIN')")
@@ -70,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .access("hasRole('ROLE_USER')")
                 .antMatchers("/safe/only-admin")
                 .access("hasRole('ROLE_ADMIN')")
-                .anyRequest().authenticated()
+                .anyRequest().authenticated()*/
                 .and()
                 .csrf().disable();
 

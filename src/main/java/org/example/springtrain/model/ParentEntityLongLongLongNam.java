@@ -18,14 +18,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ParentEntity {
+public class ParentEntityLongLongLongNam {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    private String id;
 
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<ChildEntity> childEntityList;
+    private List<ChildEntityLongLongLongNam> childEntityLongLongLongNamList;
 }

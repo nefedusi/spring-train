@@ -14,13 +14,13 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChildEntity {
+public class ChildEntityLongLongLongNam {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+    //@GeneratedValue(strategy = GenerationType.AUTO)
+    private String id;
 
     private String name;
 
-    private Long parentEntityId;
+    private String parentEntityLongLongLongNamId;
 }

@@ -33,7 +33,7 @@ INSERT INTO person_role (id, person_id, role) VALUES
 
 
 CREATE TABLE IF NOT EXISTS parent_entity (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  id VARCHAR(255) AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255)
 );
 
@@ -41,10 +41,10 @@ CREATE TABLE IF NOT EXISTS parent_entity (
 --(1, 'P1'), (2, 'P2');
 
 CREATE TABLE IF NOT EXISTS child_entity (
-  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  id VARCHAR(255) AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255),
-  parent_entity_id BIGINT,
-  FOREIGN KEY(parent_entity_id) REFERENCES parent_entity(id)
+  parent_entity_id VARCHAR(255)--,
+  --FOREIGN KEY(parent_entity_id) REFERENCES parent_entity(id)
 );
 
 --INSERT INTO child_entity (id, name, parent_entity_id) VALUES
