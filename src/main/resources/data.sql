@@ -30,3 +30,18 @@ CREATE TABLE IF NOT EXISTS person_role (
 -- 1 - ROLE_ADMIN
 INSERT INTO person_role (id, person_id, role) VALUES
 (1, 1, 0), (2, 2, 0), (3, 2, 1), (4, 3, 1);
+
+------------------------------------------
+--db-indexes
+------------------------------------------
+CREATE TABLE IF NOT EXISTS data_without_index (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  f1 BIGINT,
+  f2 BIGINT
+);
+CREATE TABLE IF NOT EXISTS data_with_index (
+  id BIGINT AUTO_INCREMENT PRIMARY KEY,
+  f1 BIGINT,
+  f2 BIGINT
+);
+CREATE INDEX f1_index ON data_with_index (f1);
