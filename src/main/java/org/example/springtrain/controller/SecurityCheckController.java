@@ -28,7 +28,7 @@ public class SecurityCheckController {
 
     @GetMapping("/unsafe")
     public String unsafeWithoutSlash() {
-        return "This endpoint is safe because it doesn't have '/' in the end";
+        return "This endpoint is unsafe although it doesn't have '/' in the end";
     }
 
     @GetMapping("/unsafe/another")
